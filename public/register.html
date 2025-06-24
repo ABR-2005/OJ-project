@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Register</title>
+</head>
+<body>
+  <h2>Signup Form</h2>
+  <form id="signupForm">
+    <input type="text" placeholder="Username" name="username" required /><br><br>
+    <input type="email" placeholder="Email" name="email" required /><br><br>
+    <input type="password" placeholder="Password" name="password" required /><br><br>
+
+    <select name="role">
+      <option value="user">User</option>
+      <option value="admin">Admin</option>
+    </select><br><br>
+
+    <button type="submit">Register</button>
+  </form>
+
+  <p id="msg"></p>
+
+  <script>
+    document.getElementById('signupForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const form = e.target;
+      const data = {
+        username: form.username.value,
+        email: form.email.value,
+        password: form.password.value,
+        role: form.role.value
+      };
+
+      try {
+        const res = await fetch('/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        const result = await res.json();
+        document.getElementById('msg').innerText = result.message || result.error;
+      } catch (err) {
+        document.getElementById('msg').innerText = "Something went wrong!";
+        console.error("Error during registration:", err);
+      }
+    });
+  </script>
+</body>
+</html>

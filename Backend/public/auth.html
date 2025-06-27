@@ -35,7 +35,9 @@
       </select>
       <button type="submit">Register</button>
     </form>
-
+    
+    <button id="checkAdmin">Check Admin Access</button>
+    <button id="logout">Logout</button>
     <p id="msg"></p>
   </div>
 
@@ -78,24 +80,36 @@
       msg.innerText = result.message || result.error;
     });
 
-    // Login Form Handler
-    loginForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const form = e.target;
-      const data = {
-        email: form.email.value,
-        password: form.password.value
-      };
+   // Login Form Handler
+loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const data = {
+    email: form.email.value,
+    password: form.password.value
+  };
+  const res = await fetch("/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
 
-      const res = await fetch("/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-
-      const result = await res.json();
-      msg.innerText = result.message || result.error;
-    });
+  const result = await res.json();
+  if (result.token) {
+    localStorage.setItem("token", result.token); // ✅ Save token
+    msg.innerText = "Login Successful";
+  } else {
+    msg.innerText = result.error || "Login failed";
+  }
+});
   </script>
+
+ <script>
+   document.getElementById("logout").onclick = () => {
+    localStorage.removeItem("token");
+    msg.innerText = "Logged out successfully";
+   };
+ </script>
+
 </body>
 </html>

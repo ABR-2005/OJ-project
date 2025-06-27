@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
-import { AuthProvider } from '../contexts/AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 import { LogOut, User, Code } from 'lucide-react';
 
 const Dashboard = () => {
-  const { user, logout } = useContext(AuthContext);
+  const { user, logout } = useAuth();
 
   const handleLogout = () => {
     logout();

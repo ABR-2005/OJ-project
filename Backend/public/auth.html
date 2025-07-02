@@ -96,7 +96,7 @@ loginForm.addEventListener("submit", async (e) => {
 
   const result = await res.json();
   if (result.token) {
-    localStorage.setItem("token", result.token); // ✅ Save token
+    localStorage.setItem("token", result.token); 
     msg.innerText = "Login Successful";
   } else {
     msg.innerText = result.error || "Login failed";

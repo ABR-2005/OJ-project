@@ -1,14 +1,14 @@
-const express =require("express");
-const router=express.Router;
-const {compileCode}=require("../compilers");
+const express = require("express");
+const router = express.Router(); // ❗️ You missed the parentheses here
+const { compileCode } = require("../compilers");
 
-router.post("/",(req,res)=>{
-  const {language,code,input}=req.body;
+router.post("/", (req, res) => {
+  const { code, input, language, timeLimit } = req.body;
 
-  compileCode(language,code,input,(err,output) =>{
-    if(err) return res.status(400).json({error:err});
-    res.json({output});
+  compileCode(language, code, input, timeLimit, (result) => {
+    if (result.error) return res.status(400).json(result);
+    res.json(result);
   });
 });
 
-module.exports=router;
+module.exports = router;

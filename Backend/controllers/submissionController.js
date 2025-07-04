@@ -3,46 +3,59 @@ const Submission = require("../models/Submission");
 const Problem = require("../models/Problem");
 
 exports.submitCode = async (req, res) => {
-  try {
+  
+  try { 
     const { userId, problemId, code, language } = req.body;
-
-    // 1️⃣ Fetch problem details
+    // Fetch problem details
     const problem = await Problem.findById(problemId);
     if (!problem) {
       return res.status(404).json({ error: "Problem not found" });
     }
-
-    // 2️⃣ Loop through test cases
+    
+    // Loop through test cases
     let allPassed = true;
-    let finalOutput = "";
     let finalInput = "";
+    let finalOutput = "";
     let error = null;
+    let verdict = "Accepted";
 
-    for (let test of problem.testCases) {
-      const response = await axios.post("http://localhost:5001/compile", {
-        code,
-        input: test.input,
-        language,
-      });
+    let baseTimeLimit = problem.timeLimit || 2000;
+    let timeLimit = baseTimeLimit;
 
-      const result = response.data;
-      finalInput = test.input;
-      finalOutput = result.output || "";
-      error = result.error || null;
-
-      if (error || finalOutput.trim() !== test.output.trim()) {
-        allPassed = false;
-        break;
-      }
+    if (language === "Java") {
+      timeLimit *= 2;
+    }   
+    else if (language === "Python") {
+      timeLimit *= 3;
     }
 
-    const verdict = error
-      ? "Compilation Error"
-      : allPassed
-      ? "Accepted"
-      : "Wrong Answer";
+    for (let test of problem.testCases) {
+     const response = await axios.post("http://localhost:5001/compile", {
+     code,
+     input: test.input,
+     language,
+     timeLimit
+    });
 
-    // 3️⃣ Save submission to DB
+    const result = response.data;
+    finalInput = test.input;
+    finalOutput = result.output || "";
+    error = result.error || null;
+
+    if (error || finalOutput.trim() !== test.expectedOutput.trim()) {
+     allPassed = false;
+     verdict = test.isHidden ? "Hidden Wrong Answer" : "Wrong Answer";
+     break;
+   }
+  }
+
+// Update verdict in case of compilation error (outside loop)
+   if (error) {
+    verdict = "Compilation Error";
+   }
+
+
+    // Save submission to DB
     const submission = new Submission({
       userId,
       problemId,
@@ -57,7 +70,7 @@ exports.submitCode = async (req, res) => {
 
     await submission.save();
 
-    // 4️⃣ Send response
+    // Send response
     res.json({
       verdict,
       output: finalOutput,
@@ -68,7 +81,6 @@ exports.submitCode = async (req, res) => {
     res.status(500).json({ error: "Server error during code submission" });
   }
 };
-
 
 exports.getUserSubmissions = async(req,res) => {
    try{

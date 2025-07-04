@@ -6,11 +6,12 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 
 const submissionRoutes = require("./routes/submissions");
+const aiRoutes = require("./routes/ai");
 const authRoutes = require("./routes/auth");
 const problemRoutes = require("./routes/problem");
 const verifyToken = require("./middleware/authMiddleware");
 const verifyAdmin = require("./middleware/roleMiddleware");
-
+const leaderboardRoutes = require("./routes/leaderboard");
 const app = express();
 
 // 🔧 Middleware
@@ -28,6 +29,7 @@ mongoose.connect("mongodb://127.0.0.1:27017/online_judge", {
 
 // 🔗 API Routes
 app.use("/api", submissionRoutes);    // POST /api/submit
+app.use("/api", aiRoutes);
 app.use("/api", authRoutes);          // POST /api/login etc
 app.use("/api", problemRoutes);       // CRUD for problems
 
@@ -38,6 +40,7 @@ app.get("/admin-only", verifyToken, verifyAdmin, (req, res) => {
 
 // 🌐 Serve frontend static files (if using basic HTML frontend)
 app.use(express.static(path.join(__dirname, "public")));
+app.use("/api/leaderboard", leaderboardRoutes);
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));

@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (credentials) => {
     try {
-      const response = await fetch('/api/auth/login', {
+      const response = await fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(credentials)
@@ -40,14 +40,14 @@ export const AuthProvider = ({ children }) => {
         return { success: false, error: error.message };
       }
     } catch (err) {
-      console.error('Login error:', err);
+      console.error('Login error:',err);
       return { success: false, error: 'Network or server error' };
     }
   };
 
   const register = async (userData) => {
     try {
-      const res = await fetch('/api/auth/register', {
+      const res = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData)
@@ -60,14 +60,14 @@ export const AuthProvider = ({ children }) => {
         return { success: false, error: err.message };
       }
     } catch (err) {
-      console.error('Register error:', err);
+      console.error('Register error:',err);
       return { success: false, error: 'Network or server error' };
     }
   };
 
   const logout = async () => {
     try {
-      await fetch('/api/auth/logout', {
+      await fetch('/api/logout', {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` }
       });

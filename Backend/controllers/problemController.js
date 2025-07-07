@@ -16,7 +16,7 @@ exports.getAllProblems = async(req,res) => {
     res.json(problems);
 };
 
-exports.getProblemById= async (req,res) => {
+exports.getProblemBYID= async (req,res) => {
     const problem = await Problem.findById(req.params.id);
     if(!problem) return res.staus(404).json({error: "Problem not found"});
     res.json(problem);

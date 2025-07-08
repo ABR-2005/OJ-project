@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Mail, Lock, Eye, EyeOff, Code, AlertCircle, CheckCircle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom'; // 🔥 IMPORT useNavigate
 
 const Login = ({ onSwitchToRegister }) => {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -8,8 +9,9 @@ const Login = ({ onSwitchToRegister }) => {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
-  
+
   const { login } = useAuth();
+  const navigate = useNavigate(); // 🔥 INITIALIZE useNavigate
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,7 +27,7 @@ const Login = ({ onSwitchToRegister }) => {
     if (!formData.email.includes('@')) newErrors.email = 'Valid email is required';
     if (!formData.password) newErrors.password = 'Password is required';
     if (formData.password.length < 6) newErrors.password = 'Password must be at least 6 characters';
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -37,18 +39,23 @@ const Login = ({ onSwitchToRegister }) => {
     setIsLoading(true);
     setMessage({ type: '', text: '' });
 
-    // Simulate login process
+    // Simulate login process (keep this setTimeout for now if your actual API call is async)
     setTimeout(async () => {
       const result = await login(formData);
-      
+
       if (result.success) {
         setMessage({ type: 'success', text: 'Login successful! Redirecting...' });
+        // 🔥 ADD THE REDIRECTION HERE AFTER A SHORT DELAY IF DESIRED, OR IMMEDIATELY
+        // A small delay can help the user see the "Login successful!" message.
+        setTimeout(() => {
+          navigate('/dashboard'); // Or '/' if you prefer to land on the root and let AuthRedirect handle it
+        }, 1500); // Redirect after 1.5 seconds
       } else {
         setMessage({ type: 'error', text: result.error });
       }
-      
+
       setIsLoading(false);
-    }, 1000);
+    }, 1000); // This setTimeout simulates the API call time
   };
 
   return (

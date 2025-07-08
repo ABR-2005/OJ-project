@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (credentials) => {
     try {
-      const response = await fetch('/api/login', {
+      const response = await fetch('http://localhost:5000/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(credentials)
@@ -46,28 +46,38 @@ export const AuthProvider = ({ children }) => {
   };
 
   const register = async (userData) => {
-    try {
-      const res = await fetch('/api/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(userData)
-      });
+  try {
+    console.log("📤 Sending from frontend:", userData);
 
-      if (res.ok) {
-        return { success: true, message: 'Registration successful! Please login.' };
-      } else {
-        const err = await res.json();
-        return { success: false, error: err.message };
+    const res = await fetch('http://localhost:5000/api/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(userData)
+    });
+
+    if (res.ok) {
+      return { success: true, message: 'Registration successful! Please login.' };
+    } else {
+      let err;
+      try {
+        err = await res.json(); // 🌐 try to read JSON error
+      } catch {
+        err = { error: 'Unexpected server response' }; // fallback
       }
-    } catch (err) {
-      console.error('Register error:',err);
-      return { success: false, error: 'Network or server error' };
+
+      // ✅ Handle both "message" and "error" fields
+      return { success: false, error: err.message || err.error || 'Unknown error' };
     }
-  };
+  } catch (err) {
+    console.error('Register error:', err);
+    return { success: false, error: 'Network or server error' };
+  }
+};
+
 
   const logout = async () => {
     try {
-      await fetch('/api/logout', {
+      await fetch('http://localhost:5000/api/login', {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` }
       });

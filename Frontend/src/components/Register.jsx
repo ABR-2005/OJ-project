@@ -43,27 +43,32 @@ const Register = ({ onSwitchToLogin }) => {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!validateForm()) return;
+  e.preventDefault();
+  if (!validateForm()) return;
 
-    setIsLoading(true);
-    setMessage({ type: '', text: '' });
+  setIsLoading(true);
+  setMessage({ type: '', text: '' });
 
-    // Simulate registration process
-    setTimeout(async () => {
-      const { confirmPassword, ...registerData } = formData;
-      const result = await register(registerData);
-      
-      if (result.success) {
-        setMessage({ type: 'success', text: result.message });
-        setTimeout(() => onSwitchToLogin(), 2000);
-      } else {
-        setMessage({ type: 'error', text: result.error });
-      }
-      
-      setIsLoading(false);
-    }, 1000);
-  };
+  setTimeout(async () => {
+    const { confirmPassword, name, ...rest } = formData;
+    const registerData = {
+      username: name,
+      ...rest
+    };
+    
+    const result = await register(registerData);
+
+    if (result.success) {
+      setMessage({ type: 'success', text: result.message });
+      setTimeout(() => onSwitchToLogin(), 2000);
+    } else {
+      setMessage({ type: 'error', text: result.error });
+    }
+
+    setIsLoading(false);
+  }, 1000);
+};
+
 
   return (
     <div className="w-full max-w-md mx-auto">

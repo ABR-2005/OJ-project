@@ -1,0 +1,3 @@
+module.exports = function runCpp(code, input, timeLimit, callback) {
+  // ...your implementation...
+};

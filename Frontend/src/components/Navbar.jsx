@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 const Navbar = () => {
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -63,6 +63,18 @@ const Navbar = () => {
             `}></span>
           </Link>
         ))}
+        {user && user.role === "admin" && (
+          <Link
+            to="/add-problem"
+            className="
+              relative text-xl font-light tracking-wide transition-all duration-400 ease-in-out
+              text-green-600 hover:underline font-semibold
+              group
+            "
+          >
+            Add Problem
+          </Link>
+        )}
       </div>
 
       {/* Logout Button (Desktop) - More dramatic and sleek */}
@@ -117,6 +129,18 @@ const Navbar = () => {
                 {item.name}
               </Link>
             ))}
+            {user && user.role === "admin" && (
+              <Link
+                to="/add-problem"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="
+                  text-2xl font-light px-6 py-3 rounded-xl transition-colors duration-400 ease-in-out
+                  text-green-600 hover:underline font-semibold
+                "
+              >
+                Add Problem
+              </Link>
+            )}
             <button
               onClick={() => { handleLogout(); setIsMobileMenuOpen(false); }}
               className="bg-gradient-to-br from-red-700 to-red-900 hover:from-red-600 hover:to-red-800 text-white font-semibold py-3 px-8 rounded-full shadow-xl transition-all duration-400 ease-in-out transform hover:-translate-y-0.5 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-red-600 focus:ring-opacity-60 mt-6"

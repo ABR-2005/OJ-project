@@ -33,7 +33,7 @@ mongoose.connect("mongodb://127.0.0.1:27017/online_judge")
 
 // 🔓 Public Routes
 app.use("/api", authRoutes);  // /api/register, /api/login
-app.use("/api/leaderboard", leaderboardRoutes);
+app.use("/api", leaderboardRoutes);
 
 // 🔐 Protected Routes (token required)
 app.use("/api/submit", verifyToken, submissionRoutes);

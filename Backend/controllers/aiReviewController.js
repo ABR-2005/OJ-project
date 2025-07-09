@@ -1,27 +1,36 @@
-// C:\Users\ASUS\OneDrive\Desktop\ONLINE JUDGE\Backend\controllers\aiReviewController.js
+const { OpenAI } = require("openai");
 
-const { GoogleGenerativeAI } = require("@google/generative-ai"); // Import Google's library
-
-// Access your API key as an environment variable (loaded by dotenv)
-// Use the name you set in your .env file, e.g., GEMINI_API_KEY
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
-// For Gemini Pro, which is suitable for text generation and understanding
-const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 exports.reviewCode = async (req, res) => {
-    const { code, language } = req.body;
-    // Construct a clear prompt for code review
-    const prompt = `Please review the following ${language} code for correctness, efficiency, common errors, and suggest improvements. Provide your review in a structured format (e.g., bullet points, sections).\n\n\`\`\`${language}\n${code}\n\`\`\``;
+  const { code } = req.body;
 
-    try {
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        const text = response.text(); // Get the generated text content
+  if (!code) {
+    return res.status(400).json({ error: "Code is required" });
+  }
 
-        res.json({ review: text });
-    } catch (err) {
-        console.error("Gemini AI review failed:", err); // Log the error for debugging
-        res.status(500).json({ error: "AI review failed", details: err.message });
-    }
+  try {
+    const response = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo", // or "gpt-4" if you have access
+      messages: [
+        {
+          role: "system",
+          content: "You are a helpful AI code reviewer. Review the following code for bugs, best practices, and optimizations.",
+        },
+        {
+          role: "user",
+          content: code,
+        },
+      ],
+      temperature: 0.7,
+    });
+
+    const review = response.choices[0].message.content;
+    res.json({ review });
+  } catch (err) {
+    console.error("OpenAI review failed:", err);
+    res.status(500).json({ error: "Error while getting AI review. Please try again." });
+  }
 };

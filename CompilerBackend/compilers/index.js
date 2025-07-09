@@ -1,16 +1,15 @@
-const {runPython}=require("./pythonCompiler");
-const {runCpp}= require("./cppCompiler");
-const {runJava}=require("./javaCompiler");
+const runCpp = require('./cpp');
+const runPython = require('./python');
+const runJs = require('./js');
 
-exports.compileCode =(language,code,input,timeLimit,callback) =>{
-   switch(language.toLowerCase()){
-     case "python":
-      return runPython(code,input,timeLimit,callback);
-     case "cpp":
-      return runCpp(code,input,timeLimit,callback);
-     case "java":
-      return runJava(code,input,timeLimit,callback);
-      default:
-        return callback("Unsupported language");
-   }
+exports.compileCode = (language, code, input, timeLimit, callback) => {
+  if (language === "cpp") {
+    runCpp(code, input, timeLimit, callback);
+  } else if (language === "python") {
+    runPython(code, input, timeLimit, callback);
+  } else if (language === "javascript") {
+    runJs(code, input, timeLimit, callback);
+  } else {
+    callback({ error: "Unsupported language" });
+  }
 };

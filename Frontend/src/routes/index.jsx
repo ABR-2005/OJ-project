@@ -2,10 +2,12 @@ import { Routes, Route, Navigate, useLocation } from "react-router-dom"; // Add 
 import ProtectedRoute from "../components/ProtectedRoute";
 import AuthenticatedLayout from "../layouts/AuthenticatedLayout"; // This line should now resolve
 import { useAuth } from "../contexts/AuthContext"; // Ensure useAuth is imported for AuthRedirect
+import AuthForm from "../components/AuthForm"; // Add this import
+import AddProblem from "../pages/AddProblem"; // Add this import
 
 // Public Pages (no Navbar)
-import Login from "../components/Login";
-import Register from "../components/Register"; // Assuming Register is here, adjust if wrong
+// import Login from "../components/Login";
+// import Register from "../components/Register"; // Assuming Register is here, adjust if wrong
 
 // Protected Pages (will have Navbar via AuthenticatedLayout)
 import Dashboard from "../pages/Dashboard";
@@ -15,12 +17,21 @@ import Submissions from "../pages/Submissions";
 import Leaderboard from "../pages/Leaderboard";
 import AIReview from "../pages/AIReview";
 
+function AdminRoute({ children }) {
+  const { user } = useAuth();
+  // Adjust this check based on your user object structure
+  if (!user || user.role !== "admin") {
+    return <Navigate to="/dashboard" replace />;
+  }
+  return children;
+}
+
 export default function AppRoutes() {
   return (
     <Routes>
       {/* -------------------- Public Routes (No Navbar) -------------------- */}
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
+      <Route path="/login" element={<AuthForm />} />
+      <Route path="/register" element={<AuthForm />} />
 
       {/* -------------------- Protected Routes (WITH Navbar) -------------------- */}
       {/* All routes inside this <Route element={<AuthenticatedLayout />}> will render the Navbar */}
@@ -32,6 +43,13 @@ export default function AppRoutes() {
         <Route path="/submissions" element={<ProtectedRoute><Submissions /></ProtectedRoute>} />
         <Route path="/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
         <Route path="/ai-review" element={<ProtectedRoute><AIReview /></ProtectedRoute>} />
+        <Route path="/add-problem" element={
+          <ProtectedRoute>
+            <AdminRoute>
+              <AddProblem />
+            </AdminRoute>
+          </ProtectedRoute>
+        } />
       </Route>
 
       {/* -------------------- Catch-all and Initial Redirect -------------------- */}

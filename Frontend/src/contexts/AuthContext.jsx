@@ -77,7 +77,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await fetch('http://localhost:5000/api/login', {
+      await fetch('http://localhost:5000/api/logout', {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` }
       });

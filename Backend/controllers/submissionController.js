@@ -30,24 +30,31 @@ exports.submitCode = async (req, res) => {
     }
 
     for (let test of problem.testCases) {
-     const response = await axios.post("http://localhost:5001/compile", {
-     code,
-     input: test.input,
-     language,
-     timeLimit
-    });
+      try {
+        const response = await axios.post("http://localhost:5001/compile", {
+          code,
+          input: test.input,
+          language,
+          timeLimit
+        });
+        const result = response.data;
+        finalInput = test.input;
+        finalOutput = result.output || "";
+        error = result.error || null;
 
-    const result = response.data;
-    finalInput = test.input;
-    finalOutput = result.output || "";
-    error = result.error || null;
-
-    if (error || finalOutput.trim() !== test.expectedOutput.trim()) {
-     allPassed = false;
-     verdict = test.isHidden ? "Hidden Wrong Answer" : "Wrong Answer";
-     break;
-   }
-  }
+        if (error || finalOutput.trim() !== test.expectedOutput.trim()) {
+          allPassed = false;
+          verdict = test.isHidden ? "Hidden Wrong Answer" : "Wrong Answer";
+          break;
+        }
+      } catch (compileErr) {
+        console.error("Compiler backend error:", compileErr?.response?.data || compileErr.message || compileErr);
+        error = compileErr?.response?.data?.error || compileErr.message || "Unknown compiler error";
+        verdict = "Compilation Error";
+        allPassed = false;
+        break;
+      }
+    }
 
 // Update verdict in case of compilation error (outside loop)
    if (error) {
@@ -78,7 +85,7 @@ exports.submitCode = async (req, res) => {
     });
   } catch (err) {
     console.error("Submission Error:", err);
-    res.status(500).json({ error: "Server error during code submission" });
+    res.status(500).json({ error: err.message || "Server error during code submission" });
   }
 };
 

@@ -13,8 +13,8 @@ const verifyAdmin = require("../middleware/roleMiddleware")
 
 const router = express.Router();
 
-router.post("/", verifyToken,verifyAdmin,createProblem);
-router.get("/",verifyToken,getAllProblems);
+router.post("/", verifyToken, verifyAdmin, createProblem);
+router.get("/", verifyToken, getAllProblems);
 router.get("/:id",verifyToken,getProblemBYID);
 router.put("/:id",verifyToken,verifyAdmin,updateProblem);
 router.delete("/:id",verifyToken,verifyAdmin,deleteProblem);

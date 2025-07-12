@@ -9,7 +9,7 @@ const path=require("path");
   const fullpath =path.join(__dirname,dir);
   if(!fs.existsSync(fullpath)){
     fs.mkdirSync(fullpath);
-    console.log('created missing folder: ${dir}');
+    console.log(`created missing folder: ${dir}`);
   }
 });
 
@@ -20,5 +20,5 @@ app.use(bodyParser.json());
 app.use("/",routes);
 
 const PORT= process.env.PORT || 5001;
-app.listen(PORT,()=> console.log('Compiler backend running on port ${PORT}'));
+app.listen(PORT,()=> console.log(`Compiler backend running on port ${PORT}`));
 

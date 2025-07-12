@@ -1,7 +1,8 @@
 const express = require("express");
+const { getLeaderboard } = require("../controllers/leaderboardController");
 const router = express.Router();
-const {getLeaderboard}=require("../controllers/leaderboardController");
 
-router.get("leaderboard",getLeaderboard); // /api/leaderboard
+// Make leaderboard public (no verifyToken)
+router.get("/", getLeaderboard);
 
 module.exports = router;

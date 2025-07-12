@@ -3,12 +3,13 @@ const Submission = require("../models/Submission");
 const Problem = require("../models/Problem");
 
 exports.submitCode = async (req, res) => {
-  
   try { 
     const { userId, problemId, code, language } = req.body;
+    console.log("[submitCode] userId:", userId, "problemId:", problemId, "language:", language);
     // Fetch problem details
     const problem = await Problem.findById(problemId);
     if (!problem) {
+      console.log("[submitCode] Problem not found");
       return res.status(404).json({ error: "Problem not found" });
     }
     
@@ -22,10 +23,10 @@ exports.submitCode = async (req, res) => {
     let baseTimeLimit = problem.timeLimit || 2000;
     let timeLimit = baseTimeLimit;
 
-    if (language === "Java") {
+    if (language.toLowerCase() === "java") {
       timeLimit *= 2;
     }   
-    else if (language === "Python") {
+    else if (language.toLowerCase() === "python") {
       timeLimit *= 3;
     }
 
@@ -56,11 +57,10 @@ exports.submitCode = async (req, res) => {
       }
     }
 
-// Update verdict in case of compilation error (outside loop)
-   if (error) {
-    verdict = "Compilation Error";
-   }
-
+    // Update verdict in case of compilation error (outside loop)
+    if (error) {
+      verdict = "Compilation Error";
+    }
 
     // Save submission to DB
     const submission = new Submission({
@@ -76,6 +76,7 @@ exports.submitCode = async (req, res) => {
     });
 
     await submission.save();
+    console.log("[submitCode] Submission saved:", submission._id);
 
     // Send response
     res.json({
@@ -90,14 +91,15 @@ exports.submitCode = async (req, res) => {
 };
 
 exports.getUserSubmissions = async(req,res) => {
-   try{
-     const {userId}=req.params;
-     const submissions = await Submission.find({userId}).populate("problemId","title");
-     res.json(submissions);
-   }
-
-   catch(err){
-     console.error(err);
-     res.status(500).json({error:"Failed to fetch submissions"});
-   }
+  try{
+    const {userId}=req.params;
+    console.log("[getUserSubmissions] userId:", userId);
+    const submissions = await Submission.find({userId}).populate("problemId","title");
+    console.log("[getUserSubmissions] submissions count:", submissions.length);
+    res.json(submissions);
+  }
+  catch(err){
+    console.error(err);
+    res.status(500).json({error:"Failed to fetch submissions"});
+  }
 };

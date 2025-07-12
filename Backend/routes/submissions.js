@@ -4,6 +4,6 @@ const { submitCode,getUserSubmissions }=require("../controllers/submissionContro
 
 // POST api/submit will run the controller
 router.post("/submit",submitCode);
-router.get("/submissions/:userId", getUserSubmissions);
+router.get('/:userId', getUserSubmissions);
 
 module.exports =router;

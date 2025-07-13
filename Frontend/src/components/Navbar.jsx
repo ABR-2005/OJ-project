@@ -37,7 +37,6 @@ const Navbar = () => {
           { path: "/problems", name: "Problems" },
           { path: "/submissions", name: "Submissions" },
           { path: "/leaderboard", name: "Leaderboard" },
-          { path: "/ai-review", name: "AI Review" },
         ].map((item) => (
           <Link
             key={item.path}
@@ -112,7 +111,6 @@ const Navbar = () => {
               { path: "/problems", name: "Problems" },
               { path: "/submissions", name: "Submissions" },
               { path: "/leaderboard", name: "Leaderboard" },
-              { path: "/ai-review", name: "AI Review" },
             ].map((item) => (
               <Link
                 key={item.path}

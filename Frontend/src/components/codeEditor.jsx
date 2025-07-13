@@ -11,7 +11,29 @@ const CodeEditor = ({ code, setCode }) => {
   const [language, setLanguage] = useState("cpp");
   const [theme, setTheme] = useState("vs-dark");
 
-  const handleLanguageChange = (e) => setLanguage(e.target.value);
+  const getDefaultCode = (lang) => {
+    switch (lang) {
+      case 'python':
+        return '# Start coding...';
+      case 'javascript':
+        return '// Start coding...';
+      case 'java':
+        return '// Start coding...';
+      case 'cpp':
+      default:
+        return '// Start coding...';
+    }
+  };
+
+  const handleLanguageChange = (e) => {
+    const newLang = e.target.value;
+    setLanguage(newLang);
+    // Update code to language-appropriate default if it's the generic default
+    if (code === '// Start coding...' || code === '# Start coding...') {
+      setCode(getDefaultCode(newLang));
+    }
+  };
+  
   const handleThemeToggle = () => setTheme(theme === "vs-dark" ? "light" : "vs-dark");
 
   return (
@@ -47,7 +69,7 @@ const CodeEditor = ({ code, setCode }) => {
         language={language}
         theme={theme}
         value={code}
-        defaultValue="// Start coding..."
+        defaultValue={getDefaultCode(language)}
         onChange={(value) => setCode(value)}
         options={{
           fontSize: 14,

@@ -15,7 +15,6 @@ import ProblemList from "../pages/ProblemList";
 import ProblemPage from "../pages/ProblemPage";
 import Submissions from "../pages/Submissions";
 import Leaderboard from "../pages/Leaderboard";
-import AIReview from "../pages/AIReview";
 
 function AdminRoute({ children }) {
   const { user } = useAuth();
@@ -42,7 +41,6 @@ export default function AppRoutes() {
         <Route path="/problem/:id" element={<ProtectedRoute><ProblemPage /></ProtectedRoute>} />
         <Route path="/submissions" element={<ProtectedRoute><Submissions /></ProtectedRoute>} />
         <Route path="/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
-        <Route path="/ai-review" element={<ProtectedRoute><AIReview /></ProtectedRoute>} />
         <Route path="/add-problem" element={
           <ProtectedRoute>
             <AdminRoute>

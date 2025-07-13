@@ -18,6 +18,23 @@ const ProblemPage = () => {
   const [lastTestCase, setLastTestCase] = useState(null);
   const { token, user } = useAuth();
 
+  // AI Review state
+  const [aiReview, setAiReview] = useState('');
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState('');
+
+  const getDefaultCode = (lang) => {
+    switch (lang) {
+      case 'python':
+        return '# Write your solution here';
+      case 'javascript':
+      case 'java':
+      case 'cpp':
+      default:
+        return '// Write your solution here';
+    }
+  };
+
   useEffect(() => {
     if (!token) return;
     const fetchProblem = async () => {
@@ -34,6 +51,13 @@ const ProblemPage = () => {
     };
     fetchProblem();
   }, [id, token]);
+
+  // When language changes, update code if it's still the default
+  useEffect(() => {
+    if (code === '// Write your solution here' || code === '# Write your solution here') {
+      setCode(getDefaultCode(language));
+    }
+  }, [language]);
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -90,6 +114,27 @@ const ProblemPage = () => {
     }
   };
 
+  // AI Review handler
+  const handleAIReview = async () => {
+    setAiLoading(true);
+    setAiError('');
+    setAiReview('');
+    try {
+      const response = await axios.post('http://localhost:5000/api/ai/review', {
+        code: code
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      setAiReview(response.data.review);
+    } catch (err) {
+      setAiError(err.response?.data?.error || 'Failed to get AI review. Please try again.');
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
   const getVerdictColor = (verdict) => {
     switch (verdict) {
       case 'Accepted': return 'text-green-400 bg-green-900/40 border-green-400';
@@ -128,7 +173,10 @@ const ProblemPage = () => {
           </div>
           <div className="flex items-center space-x-4 mt-6 md:mt-0">
             <button
-              onClick={() => setShowCustomTest(!showCustomTest)}
+              onClick={() => {
+                console.log('Custom Input button clicked');
+                setShowCustomTest(!showCustomTest);
+              }}
               className="px-6 py-3 text-lg font-bold text-white bg-gradient-to-r from-green-500 to-blue-500 rounded-xl shadow-lg hover:from-green-600 hover:to-blue-600 transition-all duration-300"
             >
               Custom Input
@@ -188,35 +236,34 @@ const ProblemPage = () => {
               </div>
             )}
             {/* Custom Input Test */}
-            {showCustomTest && (
-              <div className="bg-white/10 backdrop-blur-lg rounded-3xl shadow-xl border border-green-700 p-8 animate-fade-in-up">
-                <h2 className="text-2xl font-bold text-green-300 mb-6">Custom Input Test</h2>
-                <div className="space-y-6">
-                  <div>
-                    <label className="block text-lg font-bold text-green-200 mb-2">Input:</label>
-                    <textarea
-                      value={customInput}
-                      onChange={(e) => setCustomInput(e.target.value)}
-                      className="w-full h-32 px-4 py-3 border border-green-400 rounded-xl bg-gray-900 text-green-200 font-mono focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                      placeholder="Enter your test input here..."
-                    />
-                  </div>
-                  <button
-                    onClick={handleCustomTest}
-                    disabled={loading}
-                    className="px-6 py-3 text-lg font-bold text-white bg-gradient-to-r from-green-500 to-blue-500 rounded-xl shadow-lg hover:from-green-600 hover:to-blue-600 transition-all duration-300"
-                  >
-                    {loading ? 'Running...' : 'Run Test'}
-                  </button>
-                  {customOutput && (
-                    <div>
-                      <label className="block text-lg font-bold text-green-200 mb-2">Output:</label>
-                      <pre className="bg-gray-900 p-4 rounded-xl text-green-200 text-lg overflow-x-auto border border-green-700">{customOutput}</pre>
-                    </div>
-                  )}
+            {/* Always render for debug */}
+            <div className="bg-white/10 backdrop-blur-lg rounded-3xl shadow-xl border border-green-700 p-8 animate-fade-in-up">
+              <h2 className="text-2xl font-bold text-green-300 mb-6">Custom Input Test</h2>
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-lg font-bold text-green-200 mb-2">Input:</label>
+                  <textarea
+                    value={customInput}
+                    onChange={(e) => setCustomInput(e.target.value)}
+                    className="w-full h-32 px-4 py-3 border border-green-400 rounded-xl bg-gray-900 text-green-200 font-mono focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    placeholder="Enter your test input here..."
+                  />
                 </div>
+                <button
+                  onClick={handleCustomTest}
+                  disabled={loading}
+                  className="px-6 py-3 text-lg font-bold text-white bg-gradient-to-r from-green-500 to-blue-500 rounded-xl shadow-lg hover:from-green-600 hover:to-blue-600 transition-all duration-300"
+                >
+                  {loading ? 'Running...' : 'Run Test'}
+                </button>
+                {customOutput && (
+                  <div>
+                    <label className="block text-lg font-bold text-green-200 mb-2">Output:</label>
+                    <pre className="bg-gray-900 p-4 rounded-xl text-green-200 text-lg overflow-x-auto border border-green-700">{customOutput}</pre>
+                  </div>
+                )}
               </div>
-            )}
+            </div>
           </div>
           {/* Right Panel - Code Editor */}
           <div className="space-y-8">
@@ -225,13 +272,14 @@ const ProblemPage = () => {
               <div className="flex justify-between items-center">
                 <label className="text-lg font-bold text-blue-200">Language:</label>
                 <select
-                  className="px-4 py-3 border border-blue-400 rounded-xl bg-gray-900 text-blue-200 font-bold focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   value={language}
-                  onChange={(e) => setLanguage(e.target.value)}
+                  onChange={e => setLanguage(e.target.value)}
+                  className="p-2 rounded border bg-gray-900 text-white border-gray-700 focus:outline-none focus:border-purple-500"
                 >
                   <option value="cpp">C++</option>
                   <option value="python">Python</option>
                   <option value="java">Java</option>
+                  <option value="javascript">JavaScript</option>
                 </select>
               </div>
             </div>
@@ -242,22 +290,42 @@ const ProblemPage = () => {
               </div>
               <div className="h-96">
                 <Editor
-                  height="100%"
+                  height="400px"
+                  language={language}
                   theme="vs-dark"
-                  defaultLanguage={language}
                   value={code}
-                  onChange={(value) => setCode(value)}
+                  defaultValue={getDefaultCode(language)}
+                  onChange={value => setCode(value)}
                   options={{
+                    fontSize: 14,
                     minimap: { enabled: false },
-                    fontSize: 16,
-                    lineNumbers: 'on',
-                    roundedSelection: false,
-                    scrollBeyondLastLine: false,
                     automaticLayout: true,
+                    scrollBeyondLastLine: false,
                   }}
                 />
               </div>
             </div>
+            {/* AI Review Button & Output */}
+            <button
+              onClick={handleAIReview}
+              disabled={aiLoading}
+              className="w-full px-8 py-3 text-xl font-bold text-white bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl shadow-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+            >
+              {aiLoading ? 'Getting AI Review...' : 'AI Review'}
+            </button>
+            {aiError && (
+              <div className="bg-red-900/20 border border-red-500 text-red-400 p-4 rounded-lg mt-2">
+                {aiError}
+              </div>
+            )}
+            {aiReview && (
+              <div className="bg-gray-800 border border-gray-700 rounded-lg p-6 mt-4 max-h-64 overflow-y-auto">
+                <h3 className="text-xl font-bold text-purple-300 mb-2">AI Review</h3>
+                <div className="whitespace-pre-wrap text-gray-300 leading-relaxed">
+                  {aiReview}
+                </div>
+              </div>
+            )}
             {/* Submit Button */}
             <button
               onClick={handleSubmit}

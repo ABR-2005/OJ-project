@@ -135,8 +135,7 @@ export default function Leaderboard() {
                 <div className="col-span-4">User</div>
                 <div className="col-span-2">Rating</div>
                 <div className="col-span-2">Solved</div>
-                <div className="col-span-2">Success Rate</div>
-                <div className="col-span-1">Streak</div>
+                {/* Removed Success Rate and Streak headers */}
               </div>
             </div>
 
@@ -174,11 +173,10 @@ export default function Leaderboard() {
                             </div>
                             <div>
                               <p className="font-medium text-gray-900">{user.username || 'Anonymous'}</p>
-                              <p className="text-sm text-gray-500">Joined recently</p>
+                              {/* Removed 'Joined recently' */}
                             </div>
                           </div>
                         </div>
-                        
                         {/* Rating */}
                         <div className="col-span-2">
                           <div className="flex items-center space-x-2">
@@ -190,33 +188,12 @@ export default function Leaderboard() {
                             </span>
                           </div>
                         </div>
-                        
                         {/* Solved */}
                         <div className="col-span-2">
-                          <span className="font-semibold text-gray-900">{user.acceptedCount || 0}</span>
+                          <span className="font-semibold text-gray-900">{user.uniqueProblemsSolved || user.acceptedCount || 0}</span>
                           <span className="text-sm text-gray-500 ml-1">problems</span>
                         </div>
-                        
-                        {/* Success Rate */}
-                        <div className="col-span-2">
-                          <div className="flex items-center space-x-2">
-                            <span className="font-medium text-gray-900">{successRate.toFixed(1)}%</span>
-                            <div className="flex-1 bg-gray-200 rounded-full h-2">
-                              <div 
-                                className="bg-green-500 h-2 rounded-full" 
-                                style={{ width: `${successRate}%` }}
-                              ></div>
-                            </div>
-                          </div>
-                        </div>
-                        
-                        {/* Streak */}
-                        <div className="col-span-1">
-                          <div className="flex items-center space-x-1">
-                            <span className="text-orange-500">🔥</span>
-                            <span className="font-medium text-gray-900">{streak}</span>
-                          </div>
-                        </div>
+                        {/* Removed Success Rate and Streak */}
                       </div>
                     </div>
                   );

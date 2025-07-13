@@ -28,6 +28,9 @@ module.exports = (code, input, timeLimit, callback) => {
   fs.writeFileSync(codePath, code);
   fs.writeFileSync(inputPath, input || "");
 
+  // Debug: log the code being compiled
+  console.log("CPP CODE BEING COMPILED:\n" + code);
+
   // Debug: check file existence
   if (!fs.existsSync(codePath)) {
     return callback({ error: `Code file does not exist: ${codePath}` });

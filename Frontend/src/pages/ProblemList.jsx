@@ -41,7 +41,7 @@ export default function ProblemList() {
     }
     
     if (difficultyFilter !== 'all') {
-      filtered = filtered.filter(problem => problem.difficulty === difficultyFilter);
+      filtered = filtered.filter(problem => (problem.difficulty || '').toLowerCase() === difficultyFilter);
     }
     
     setFilteredProblems(filtered);
@@ -118,7 +118,6 @@ export default function ProblemList() {
               <div className="col-span-6">Title</div>
               <div className="col-span-2">Difficulty</div>
               <div className="col-span-2">Category</div>
-              <div className="col-span-1">Acceptance</div>
             </div>
           </div>
 
@@ -171,11 +170,6 @@ export default function ProblemList() {
                       {/* Category */}
                       <div className="col-span-2">
                         <span className="text-sm text-gray-900">{problem.category || 'Algorithms'}</span>
-                      </div>
-                      
-                      {/* Acceptance Rate */}
-                      <div className="col-span-1">
-                        <span className="text-sm text-gray-900">{(Math.random() * 100).toFixed(1)}%</span>
                       </div>
                     </div>
                   </div>

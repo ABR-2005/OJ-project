@@ -39,7 +39,7 @@ const ProblemPage = () => {
     if (!token) return;
     const fetchProblem = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/problem/${id}`, {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL || '/api'}/problem/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -66,7 +66,7 @@ const ProblemPage = () => {
     setLastTestCase(null);
     try {
       const res = await axios.post(
-        'http://localhost:5000/api/submit/submit',
+        `${import.meta.env.VITE_API_URL || '/api'}/submit/submit`,
         {
           code,
           language,
@@ -100,11 +100,15 @@ const ProblemPage = () => {
     if (!customInput.trim()) return;
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:5001/compile', {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL || '/api'}/submit/compile`, {
         code,
         input: customInput,
         language,
         timeLimit: 5000
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
       setCustomOutput(res.data.output || res.data.error || 'No output');
     } catch (err) {
@@ -120,7 +124,7 @@ const ProblemPage = () => {
     setAiError('');
     setAiReview('');
     try {
-      const response = await axios.post('http://localhost:5000/api/ai/review', {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL || '/api'}/ai/review`, {
         code: code
       }, {
         headers: {

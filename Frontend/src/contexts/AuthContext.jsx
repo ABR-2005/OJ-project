@@ -1,5 +1,7 @@
 import React, { useState, useContext, createContext, useEffect } from 'react';
 
+console.log("VITE_API_URL:", import.meta.env.VITE_API_URL);
+
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -22,7 +24,8 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (credentials) => {
     try {
-      const response = await fetch('http://localhost:5000/api/login', {
+      const API_URL = import.meta.env.VITE_API_URL || '/api';
+      const response = await fetch(`${API_URL}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(credentials)
@@ -36,8 +39,14 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('user', JSON.stringify(data.user));
         return { success: true };
       } else {
-        const error = await response.json();
-        return { success: false, error: error.message };
+        let errorMsg = 'Unknown error';
+        try {
+          const error = await response.json();
+          errorMsg = error.error || error.message || errorMsg;
+        } catch (e) {
+          errorMsg = 'Server error';
+        }
+        return { success: false, error: errorMsg };
       }
     } catch (err) {
       console.error('Login error:',err);
@@ -48,8 +57,9 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
   try {
     console.log("📤 Sending from frontend:", userData);
+    const API_URL = import.meta.env.VITE_API_URL || '/api';
 
-    const res = await fetch('http://localhost:5000/api/register', {
+    const res = await fetch(`${API_URL}/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(userData)
@@ -77,7 +87,8 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await fetch('http://localhost:5000/api/logout', {
+      const API_URL = import.meta.env.VITE_API_URL || '/api';
+      await fetch(`${API_URL}/logout`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` }
       });

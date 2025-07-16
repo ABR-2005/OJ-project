@@ -18,7 +18,7 @@ module.exports = (code, input, timeLimit, callback) => {
   fs.writeFileSync(inputPath, input || "");
 
   // Use the full path to python
-  const pythonPath = "C:\\Python313\\python.exe";
+  const pythonPath = "python3";
   console.log("Using python path:", pythonPath);
   console.log("Python file:", codePath);
 

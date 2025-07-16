@@ -14,7 +14,7 @@ export default function ProblemList() {
   useEffect(() => {
     if (!token) return;
     setLoading(true);
-    axios.get("http://localhost:5000/api/problem", {
+    axios.get(`${import.meta.env.VITE_API_URL || '/api'}/problem`, {
       headers: {
         Authorization: `Bearer ${token}`
       }

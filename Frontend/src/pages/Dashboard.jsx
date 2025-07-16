@@ -25,7 +25,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (!user?._id) return;
-    axios.get(`http://localhost:5000/api/submissions/${user._id}`)
+    axios.get(`${import.meta.env.VITE_API_URL || '/api'}/submissions/${user._id}`)
       .then(res => {
         const submissions = res.data;
         const total = submissions.length;

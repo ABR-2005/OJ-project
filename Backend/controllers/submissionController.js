@@ -32,7 +32,7 @@ exports.submitCode = async (req, res) => {
 
     for (let test of problem.testCases) {
       try {
-        const response = await axios.post("http://localhost:5001/compile", {
+        const response = await axios.post("http://compilerbackend:5001/compile", {
           code,
           input: test.input,
           language,

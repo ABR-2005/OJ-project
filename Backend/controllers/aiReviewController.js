@@ -1,8 +1,6 @@
-const { OpenAI } = require("openai");
+const { GoogleGenAI } = require("@google/genai");
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 exports.reviewCode = async (req, res) => {
   const { code } = req.body;
@@ -12,25 +10,25 @@ exports.reviewCode = async (req, res) => {
   }
 
   try {
-    const response = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo", // or "gpt-4" if you have access
-      messages: [
-        {
-          role: "system",
-          content: "You are a helpful AI code reviewer. Review the following code for bugs, best practices, and optimizations.",
-        },
+    const response = await genAI.models.generateContent({
+      model: "gemini-1.5-pro", // or another Gemini model if preferred
+      contents: [
         {
           role: "user",
-          content: code,
+          parts: [
+            {
+              text: `You are a helpful AI code reviewer. Review the following code for bugs, best practices, and optimizations.\n\n${code}`,
+            },
+          ],
         },
       ],
-      temperature: 0.7,
+      // You can add config here if needed
     });
 
-    const review = response.choices[0].message.content;
+    const review = response.candidates?.[0]?.content?.parts?.[0]?.text || "No review generated.";
     res.json({ review });
   } catch (err) {
-    console.error("OpenAI review failed:", err);
+    console.error("Gemini review failed:", err);
     res.status(500).json({ error: "Error while getting AI review. Please try again." });
   }
 };

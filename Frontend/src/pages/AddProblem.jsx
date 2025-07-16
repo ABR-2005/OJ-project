@@ -35,9 +35,8 @@ export default function AddProblem() {
     setError('');
     try {
       const testCases = JSON.parse(form.testCases);
-      await axios.post('http://localhost:5000/api/problem/', {
-        ...form,
-        testCases
+      await axios.post(`${import.meta.env.VITE_API_URL || '/api'}/problem/`, {
+        ...form
       }, {
         headers: {
           Authorization: `Bearer ${token}`

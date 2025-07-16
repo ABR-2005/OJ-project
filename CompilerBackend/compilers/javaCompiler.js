@@ -57,8 +57,8 @@ module.exports = (code, input, timeLimit, callback) => {
   }
 
   // Use full paths to Java commands
-  const javacPath = "C:\\Program Files\\Common Files\\Oracle\\Java\\javapath\\javac.exe";
-  const javaPath = "C:\\Program Files\\Common Files\\Oracle\\Java\\javapath\\java.exe";
+  const javacPath = "javac";
+  const javaPath = "java";
 
   console.log("Using javac path:", javacPath);
   console.log("Using java path:", javaPath);

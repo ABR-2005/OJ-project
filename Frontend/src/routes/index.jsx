@@ -3,7 +3,7 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import AuthenticatedLayout from "../layouts/AuthenticatedLayout"; // This line should now resolve
 import { useAuth } from "../contexts/AuthContext"; // Ensure useAuth is imported for AuthRedirect
 import AuthForm from "../components/AuthForm"; // Add this import
-import AddProblem from "../pages/AddProblem"; // Add this import
+import ManageProblems from "../pages/ManageProblems"; // Update import
 
 // Public Pages (no Navbar)
 // import Login from "../components/Login";
@@ -41,10 +41,10 @@ export default function AppRoutes() {
         <Route path="/problem/:id" element={<ProtectedRoute><ProblemPage /></ProtectedRoute>} />
         <Route path="/submissions" element={<ProtectedRoute><Submissions /></ProtectedRoute>} />
         <Route path="/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
-        <Route path="/add-problem" element={
+        <Route path="/manage-problems" element={
           <ProtectedRoute>
             <AdminRoute>
-              <AddProblem />
+              <ManageProblems />
             </AdminRoute>
           </ProtectedRoute>
         } />

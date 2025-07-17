@@ -64,14 +64,14 @@ const Navbar = () => {
         ))}
         {user && user.role === "admin" && (
           <Link
-            to="/add-problem"
+            to="/manage-problems"
             className="
               relative text-xl font-light tracking-wide transition-all duration-400 ease-in-out
               text-green-600 hover:underline font-semibold
               group
             "
           >
-            Add Problem
+            Manage Problems
           </Link>
         )}
       </div>
@@ -129,14 +129,14 @@ const Navbar = () => {
             ))}
             {user && user.role === "admin" && (
               <Link
-                to="/add-problem"
+                to="/manage-problems"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="
                   text-2xl font-light px-6 py-3 rounded-xl transition-colors duration-400 ease-in-out
                   text-green-600 hover:underline font-semibold
                 "
               >
-                Add Problem
+                Manage Problems
               </Link>
             )}
             <button

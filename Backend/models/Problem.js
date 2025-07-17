@@ -8,8 +8,12 @@ const problemSchema = new mongoose.Schema({
   sampleInput: String,
   sampleOutput: String,
   testCases: [
-    { input: String, expectedOutput: String }
+    { input: String, 
+      expectedOutput: String ,
+      isHidden: {type:Boolean,default:false}
+    }
   ],
+  timeLimit: {type:Number ,default:2000},
   difficulty: String
 });
 

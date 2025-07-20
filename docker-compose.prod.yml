@@ -10,7 +10,8 @@ services:
       - PORT=5000
       - MONGO_URI=mongodb+srv://ABR_03:Abhyuday2005@cluster0.kwgww1e.mongodb.net/online_judge?retryWrites=true&w=majority&appName=Cluster0
       - JWT_SECRET=Abhyuday200520090301
-      - GEMINI_API_KEY=AIzaSyBWNijcurl
+      - GEMINI_API_KEY=YOUR_REAL_GEMINI_API_KEY_HERE
+    restart: unless-stopped
 
   compilerbackend:
     image: 548982503885.dkr.ecr.ap-south-1.amazonaws.com/online-judge-compiler:latest
@@ -19,6 +20,7 @@ services:
       - "8000:5001"
     environment:
       - PORT=5001
+    restart: unless-stopped
 
   frontend:
     image: 548982503885.dkr.ecr.ap-south-1.amazonaws.com/online-judge-frontend:latest
@@ -27,6 +29,7 @@ services:
       - "3000:5173"
     environment:
       - VITE_API_URL=http://13.232.96.186:5000/api
+    restart: unless-stopped
 
 volumes:
-  mongo_data:
+  mongo_data: 

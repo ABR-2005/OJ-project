@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   backend:
-    image: 548982503885.dkr.ecr.ap-south-1.amazonaws.com/online-judge-backend:latest
+    image: your-ecr-repository/online-judge-backend:latest
     container_name: backend
     ports:
       - "5000:5000"
@@ -13,7 +13,7 @@ services:
     restart: unless-stopped
 
   compilerbackend:
-    image: 548982503885.dkr.ecr.ap-south-1.amazonaws.com/online-judge-compiler:latest
+    image: your-ecr-repository/online-judge-compiler:latest
     container_name: compilerbackend
     ports:
       - "8000:5001"
@@ -22,12 +22,12 @@ services:
     restart: unless-stopped
 
   frontend:
-    image: 548982503885.dkr.ecr.ap-south-1.amazonaws.com/online-judge-frontend:latest
+    image: your-ecr-repository/online-judge-frontend:latest
     container_name: frontend
     ports:
       - "3000:5173"
     environment:
-      - VITE_API_URL=http://13.232.96.186:5000/api
+      - VITE_API_URL=http://your-server-ip:5000/api
     restart: unless-stopped
 
 volumes:

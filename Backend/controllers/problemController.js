@@ -2,12 +2,17 @@ const Problem= require("../models/Problem");
 
 exports.createProblem = async (req,res) =>{
     try{
-      const problem= new Problem(req.body);
+      let problemData = { ...req.body };
+      if (typeof problemData.testCases === "string") {
+        problemData.testCases = JSON.parse(problemData.testCases);
+      }
+      const problem= new Problem(problemData);
       await problem.save();
       res.json({message: "Problem created",problem});
     }
     catch(err){
-      res.status(500).json({error: "Error creating problem"});
+      console.error("Error creating problem:", err);
+      res.status(500).json({error: "Error creating problem: " + err.message});
     }
 };
 

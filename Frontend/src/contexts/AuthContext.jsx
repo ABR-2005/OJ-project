@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (credentials) => {
     try {
-      const API_URL = import.meta.env.VITE_API_URL || '/api';
+      const API_URL = 'http://13.232.96.186:5000/api';
       const response = await fetch(`${API_URL}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -57,7 +57,7 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
   try {
     console.log("📤 Sending from frontend:", userData);
-    const API_URL = import.meta.env.VITE_API_URL || '/api';
+    const API_URL = 'http://13.232.96.186:5000/api';
 
     const res = await fetch(`${API_URL}/register`, {
       method: 'POST',
@@ -87,7 +87,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      const API_URL = import.meta.env.VITE_API_URL || '/api';
+      const API_URL = 'http://13.232.96.186:5000/api';
       await fetch(`${API_URL}/logout`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` }

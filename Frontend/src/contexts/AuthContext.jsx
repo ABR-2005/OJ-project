@@ -25,6 +25,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     try {
       const API_URL = 'http://13.202.152.67:5000/api';
+      console.log('Attempting login to:', API_URL);
       const response = await fetch(`${API_URL}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

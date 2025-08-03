@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (credentials) => {
     try {
-      const API_URL = 'http://13.202.152.67:5000/api';
+      const API_URL = 'http://codepath.live:5000/api';
       console.log('Attempting login to:', API_URL);
       const response = await fetch(`${API_URL}/login`, {
         method: 'POST',
@@ -58,7 +58,7 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
   try {
     console.log("📤 Sending from frontend:", userData);
-    const API_URL = 'http://13.202.152.67:5000/api';
+    const API_URL = 'http://codepath.live:5000/api';
 
     const res = await fetch(`${API_URL}/register`, {
       method: 'POST',
@@ -88,7 +88,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      const API_URL = 'http://13.202.152.67:5000/api';
+      const API_URL = 'http://codepath.live:5000/api';
       await fetch(`${API_URL}/logout`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` }
